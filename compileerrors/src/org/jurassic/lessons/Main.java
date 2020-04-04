@@ -11,6 +11,7 @@ public class Main{
         GrandParent grandParent = new GrandParent();
         Parent parent = new Parent();
         Child child = new Child();
+        Parent<String> parent2 = new Parent<>();
 
         List<GrandParent> grandParentList = new ArrayList<GrandParent>();
         grandParentList.add(grandParent);
@@ -20,6 +21,10 @@ public class Main{
         grandParentList.get(0).grandParentMethod();
         grandParentList.get(1).parentMethod();
         grandParentList.get(2).childMethod();
+
+        if(grandParentList.get(1) instanceof Parent) {
+            ((Parent) grandParentList.get(1)).parentMethod();
+        }
 
         List<Parent> parentList = new ArrayList<>();
         parentList.add(grandParent);
@@ -48,7 +53,17 @@ public class Main{
         childList= grandParentList;
         childList = parentList;
 
-        List<? extends GrandParent> extendedGrandParentList = new ArrayList<? extends GrandParent>();
+        /*
+            PECS
+            producer - extends
+            consumer - super
+         */
+
+        List<? extends GrandParent> extendedGrandParentList = new ArrayList<GrandParent>();
+        extendedGrandParentList = new ArrayList<Parent>();
+        extendedGrandParentList = new ArrayList<Child>();
+        extendedGrandParentList = new ArrayList<Object>();
+        //extendedGrandParentList =  ...
         extendedGrandParentList.add(grandParent);
         extendedGrandParentList.add(parent);
         extendedGrandParentList.add(child);
@@ -59,11 +74,14 @@ public class Main{
         extendedGrandParentList.get(1).parentMethod();
         extendedGrandParentList.get(2).childMethod();
 
+        List<Object> objectParamList = new ArrayList<>();
+
+        extendedGrandParentList = objectParamList;
         extendedGrandParentList = grandParentList;
         extendedGrandParentList = parentList;
         extendedGrandParentList = childList;
 
-        List<? super Parent> extendedParentList = new ArrayList<? super Parent>();
+        List<? super Parent> extendedParentList = new ArrayList<>();
         extendedParentList.add(grandParent);
         extendedParentList.add(parent);
         extendedParentList.add(child);
@@ -79,6 +97,7 @@ public class Main{
         extendedParentList = childList;
 
         List<?> extendsObjectList = new ArrayList<>();
+        //List<? extends Object> extendsObjectList
 
         extendsObjectList.add(grandParent);
         extendsObjectList.add(parent);
@@ -86,6 +105,7 @@ public class Main{
         extendsObjectList.add(new Object());
         extendsObjectList.add(null);
 
+        extendsObjectList.get(0).toString();
         extendsObjectList.get(0).grandParentMethod();
         extendsObjectList.get(1).parentMethod();
         extendsObjectList.get(2).childMethod();
@@ -103,7 +123,30 @@ public class Main{
         objectList.get(0).grandParentMethod();
         objectList.get(1).parentMethod();
         objectList.get(2).childMethod();
+
+        objectList = extendedGrandParentList;
+
+        extendedGrandParentList = objectList;
+        extendedParentList = objectList;
+        childList = objectList;
+
+
+        Collection<Parent> collection = new ArrayList<>();
+        collection.add(parent);
+        collection.add(parent2);
+
+        Collection<GrandParent> collection2 = new ArrayList<>();
+        collection2.add(new GrandParent());
+        collection2.add(new GrandParent());
+
+        max(collection);
+
+        max(collection2);
     }
+
+//    public static void reverse(List<?> list) {
+//
+//    }
 
     public static void reverseWrong(List<?> list) {
         List<Object> tmp = new ArrayList<>(list);
@@ -131,7 +174,7 @@ public class Main{
         return candidate;
     }
 
-    public static <T extends Object & Comparable<? super T>> T secMax(Collection<? extends T> coll) {
+    public static <T extends Number & Comparable<? super T>> T secMax(Collection<? extends T> coll) {
         T candidate = coll.iterator().next();
         for (T elt : coll) {
             if (candidate.compareTo(elt) < 0) candidate = elt;
