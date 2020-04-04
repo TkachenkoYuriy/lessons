@@ -1,4 +1,4 @@
-package org.jurassic;
+package org.jurassic.lessons;
 
 public class GrandParent {
 
