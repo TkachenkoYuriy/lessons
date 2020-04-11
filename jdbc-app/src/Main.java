@@ -114,6 +114,75 @@ public class Main {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
+
+        try (Connection conn = getConnection()){
+
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement insertStmt = conn.prepareStatement("INSERT INTO items (name, volume, price) VALUES (?, ?, ?)");) {
+
+                // Insert 1st record
+                insertStmt.setString(1, "Zhivchik Hooivchick");
+                insertStmt.setInt(2, 2000);
+                insertStmt.setInt(3, 20);
+
+                insertStmt.executeUpdate();
+
+                // Insert 2st record
+                insertStmt.setString(1, "Cola Hooyola");
+                insertStmt.setInt(2, 1500);
+                insertStmt.setInt(3, 30);
+
+                insertStmt.executeUpdate();
+
+                // Insert 3st record
+                insertStmt.setString(1, "Juice Hooyuce");
+                insertStmt.setInt(2, 1000);
+                insertStmt.setInt(3, 35);
+
+                insertStmt.executeUpdate();
+
+                // Create Savepoint
+                Savepoint savepoint = conn.setSavepoint();
+
+                // Insert 4st record
+                insertStmt.setString(1, "Gin Hooine");
+                insertStmt.setInt(2, 1000);
+                insertStmt.setInt(3, 300);
+
+                insertStmt.executeUpdate();
+
+                // Insert 5st record
+                insertStmt.setString(1, "Tequila Hooila");
+                insertStmt.setInt(2, 500);
+                insertStmt.setInt(3, 300);
+
+                insertStmt.executeUpdate();
+
+                // Rollback to savepoint
+                conn.rollback(savepoint);
+
+                // Commit statement
+                conn.commit();
+
+                System.out.println("Transaction is commited successfully.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                if (conn != null) {
+                    try {
+                        // Roll back transaction
+                        System.out.println("Transaction is being rolled back.");
+                        conn.rollback();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Connection getConnection() throws SQLException, IOException {
