@@ -35,6 +35,26 @@ public class Main {
         return s;
     }
 
+
+    private static String inputThrows() throws MyException, IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String s = null;
+        try {
+            s = reader.readLine();
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        if (s == null || s.isEmpty()) {
+            throw new MyException("String can not be empty!");
+        }
+        return s;
+    }
+
     public static String inputWithResources() throws MyException {
         String s = null;
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))){
