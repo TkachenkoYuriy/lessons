@@ -8,7 +8,10 @@ public class Main {
             System.out.println(input());
             System.out.println(inputWithResources());
             System.out.println(inputSeveralExceptions());
+            System.out.println(inputThrows());
         } catch (MyException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
